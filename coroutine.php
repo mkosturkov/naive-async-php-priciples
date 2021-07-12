@@ -14,3 +14,8 @@ function goco(callable $coroutine) {
     };
     $tick();
 };
+
+function defer(callable $coroutine) {
+    $fiber = new Fiber($coroutine);
+    Loop::add(fn () => $fiber->start());
+}

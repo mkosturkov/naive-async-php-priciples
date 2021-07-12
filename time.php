@@ -27,3 +27,9 @@ function wait(float $interval): Promise {
         setTimeout($resolve, $interval);
     });
 }
+
+function fwait(float $interval) {
+    $fiber = Fiber::getCurrent();
+    setTimeout(fn () => $fiber->resume(), $interval);
+    Fiber::suspend();
+}

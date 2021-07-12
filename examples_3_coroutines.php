@@ -1,10 +1,10 @@
 <?php
 
-require './Loop.php';
-require './Promise.php';
-require './coroutine.php';
-require './time.php';
-require './fetch.php';
+require __DIR__ . '/Loop.php';
+require __DIR__ . '/Promise.php';
+require __DIR__ . '/coroutine.php';
+require __DIR__ . '/time.php';
+require __DIR__ . '/fetch.php';
 
 goco(function () {
     $dir = yield pfetchUrl('www.dir.bg');
