@@ -21,7 +21,7 @@ pfetchUrl('invalid')
     });
 
 wait(1)->then(function () {
-    echo "We're done\n";
+    echo "Timer is done\n";
 });
 
 Loop::run();
