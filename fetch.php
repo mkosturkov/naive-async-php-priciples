@@ -15,6 +15,7 @@ class URLFetcher
         $this->fp = @stream_socket_client("tcp://$this->url:80", $errno, $errstr, 30);
         if (!$this->fp) {
             ($this->onerror)($errstr);
+            return;
         }
         stream_set_blocking($this->fp, false);
         fwrite($this->fp, "GET / HTTP/1.0\r\nHost: $this->url\r\nAccept: */*\r\n\r\n");
