@@ -1,36 +1,30 @@
 <?php
 
-$threads_count = 3;
+$threads_count = 10;
 
-$chan = [];
+$send = parallel\Channel::make('send', parallel\Channel::Infinite);
+$input = new parallel\Events\Input();
+$events = new parallel\Events();
+$events->setInput($input);
+
+$rs = [];
 
 for ($i = 1; $i <= $threads_count; $i++) {
-    echo "$i\n";
-    echo "Creating CH\n";
-    $ch = new parallel\Channel(parallel\Channel::Infinite);
-    echo "Creating RT\n";
+    $recv = new parallel\Channel(parallel\Channel::Infinite);
+    $events->addChannel($recv);
+    $send->send(mt_rand(5, 15));
     $r = new parallel\Runtime(__DIR__ . '/shared.php');
-    echo "Adding Task\n";
-    $r->run(function () use ($ch, $i) {
-        count_to_chan($ch, $i);
+    $r->run(function () use ($send, $recv, $i) {
+        count_to_chan($send, $recv, $i);
     });
-    echo "Sending\n";
-    $ch->send(mt_rand(5, 15));
-    echo "Adding CH\n";
-    $chan[] = $ch;
+    $rs[] = $r;
 }
-
-$events = new parallel\Events();
-
-echo "Looping\n";
 
 /** @var parallel\Events\Event $e */
 foreach ($events as $e) {
     [$id, $message] = $e->value;
-    if ($message === 'END') {
-        echo "$id finished\n";
-    } else {
-        echo "Message from $id: $message\n";
+    echo "Got message from $id: $message\n";
+    if ($message !== 'END') {
         $events->addChannel($e->object);
     }
 }
